@@ -1,159 +1,139 @@
-# 🔫 FIRS — Firearm Inventory & Repository System
+🔫 FIRS — Firearm Inventory & Repository System
 
-[![Java](https://img.shields.io/badge/Java-17%2B-007396?logo=openjdk&logoColor=white)](https://adoptium.net/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.2-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Maven](https://img.shields.io/badge/Maven-3.6%2B-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**FIRS** is a full‑stack, role‑based firearms marketplace demonstration platform.  
-It showcases secure authentication, tiered catalog access, inventory management, and a complete order lifecycle – all built with a **Spring Boot** REST API and a **vanilla JavaScript** frontend.
 
-> ⚠️ **Disclaimer**  
-> This project is intended **solely for educational and demonstration purposes**. No real firearms are sold, transferred, or endorsed through this system.
 
----
 
-## ✨ Key Features
 
-### 🔐 Authentication & Role‑Based Access
-- Four distinct user roles: **Customer**, **Government/Militia**, **Licensed Dealer**, **Administrator**
-- Tiered catalog visibility – restricted items (rifles, snipers) require verified credentials
 
-### 🛒 Shopping Experience
-- Dynamic product catalog with filtering by category, brand, caliber, price, and rating
-- Real‑time cart management with FFL transfer fee simulation
-- Secure checkout process integrated with backend order creation
 
-### 📦 Order Management
-- Order history view with status tracking (Processing, Shipped, Delivered)
-- Admin dashboard for order approvals, user management, and platform oversight
 
-### 🏢 Dealer Portal
-- Full inventory CRUD operations
-- Bulk import via CSV
-- Low‑stock alerts and stock level visualization
-- FFL network management
 
-### 🎨 Frontend
-- Pure **HTML5**, **CSS3**, and **ES6 JavaScript** – no external frameworks
-- Responsive, dark tactical theme with smooth animations
-- Client‑side session & cart persistence using `localStorage`
+📌 Overview
 
----
+FIRS is a role-based inventory and order management system built with Spring Boot and a vanilla JavaScript frontend.
 
-## 🛠️ Technology Stack
+It simulates a restricted-access catalog system with tiered permissions, dealer inventory control, and full order lifecycle management.
 
-| Layer       | Technologies                                                                 |
-|-------------|-------------------------------------------------------------------------------|
-| **Backend** | Java 17, Spring Boot 3.3.2, Spring Data JPA (Hibernate), Maven, Lombok        |
-| **Frontend**| HTML5, CSS3, Vanilla JavaScript, Fetch API, Google Fonts                      |
-| **Database**| MySQL 8.0+ (with Hibernate DDL auto‑generation)                               |
-| **Tooling** | XAMPP / MySQL Workbench, VS Code, Postman                                     |
+⚠️ This project is strictly for educational and portfolio demonstration purposes. No real-world weapon transactions occur.
 
----
-
-## 📁 Project Structure
-
+⚙️ Core Features
+🔐 Authentication & Authorization
+Role-based access control:
+Customer
+Government / Military
+Licensed Dealer
+Administrator
+Secure login & registration system
+Tiered product visibility based on role permissions
+🛒 Catalog & Shopping System
+Dynamic product catalog
+Filtering by category, brand, caliber, rating, and price
+Cart system with persistent state (localStorage)
+Simulated checkout flow with backend order creation
+📦 Order Management
+Order creation and history tracking
+Status lifecycle: Processing → Shipped → Delivered
+Admin-level order oversight
+🏢 Dealer Dashboard
+Inventory CRUD operations
+CSV bulk import support
+Stock monitoring with low-stock alerts
+Inventory analytics (basic visualization support)
+🎨 Frontend
+Pure HTML, CSS, Vanilla JavaScript (ES6)
+Responsive dark tactical UI
+No external frontend frameworks
+Fetch-based API integration
+🧱 Tech Stack
+Layer	Stack
+Backend	Java 17, Spring Boot 3.3.2, Spring Data JPA, Hibernate
+Frontend	HTML5, CSS3, JavaScript (ES6), Fetch API
+Database	MySQL 8+
+Build Tool	Maven
+Tools	Postman, VS Code, MySQL Workbench / XAMPP
+📁 Project Structure
 firs-project/
-├── src/
-│ ├── main/
-│ │ ├── java/com/firs/project/
-│ │ │ ├── config/ # DataInitializer (seeds default data)
-│ │ │ ├── controller/ # REST controllers (Auth, Orders, Products, Users)
-│ │ │ ├── model/ # JPA entities (User, Product, Order, OrderItem)
-│ │ │ ├── repository/ # Spring Data JPA interfaces
-│ │ │ └── service/ # Business logic services
-│ │ └── resources/
-│ │ ├── static/ # Frontend assets (HTML, CSS, JS, images)
-│ │ └── application.properties
+├── src/main/java/com/firs/project/
+│   ├── config/          # Data initialization
+│   ├── controller/      # REST controllers
+│   ├── model/           # JPA entities
+│   ├── repository/      # Data access layer
+│   ├── service/         # Business logic
+│
+├── src/main/resources/
+│   ├── static/          # Frontend (HTML/CSS/JS)
+│   └── application.properties
+│
 ├── database/
-│ └── firs_db.sql # SQL schema + initial data
+│   └── firs_db.sql      # Schema + seed data
+│
 ├── pom.xml
 └── README.md
-
-
-
----
-
-## 🚀 Getting Started
-
-### 📋 Prerequisites
-- **Java 17** or later ([Adoptium](https://adoptium.net/))
-- **Maven** 3.6+ ([Download](https://maven.apache.org/download.cgi))
-- **MySQL** 8.0+ (or XAMPP for local development)
-
-### 1️⃣ Clone the Repository
-```bash
+🚀 Getting Started
+1️⃣ Prerequisites
+Java 17+
+Maven 3.6+
+MySQL 8+ (or XAMPP)
+2️⃣ Clone Repository
 git clone https://github.com/your-username/firs-project.git
 cd firs-project
+3️⃣ Configure Database
 
-2️⃣ Configure Database
-Edit src/main/resources/application.properties with your MySQL credentials:
+Edit:
 
+src/main/resources/application.properties
 spring.datasource.url=jdbc:mysql://localhost:3306/firs_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
 spring.datasource.username=root
 spring.datasource.password=your_password
-
-
-3️⃣ (Optional) Import SQL Schema
-If you prefer a pre‑populated database:
-
-mysql -u root -p firs_db < database/firs_db.sql
-
-
-4️⃣ Run the Backend
-
+4️⃣ Run Backend
 mvn spring-boot:run
 
-The API will be available at http://localhost:8080.
+API runs at:
 
+http://localhost:8080
+5️⃣ Run Frontend
 
-5️⃣ Launch the Frontend
-Serve the src/main/resources/static/ directory using any local HTTP server (e.g., VS Code Live Server).
-Ensure the API_BASE in script.js points to http://localhost:8080/api.
+Serve /src/main/resources/static using Live Server or any HTTP server.
 
-🔐 Demo Credentials
-Role	Email	Password	Access Level
-Customer	customer@firs.com	customer123	Handguns & Revolvers only
-Government	gov@firs.com	gov123	Full catalog (rifles, snipers)
-Dealer	dealer@firs.com	dealer123	Dealer dashboard, inventory management
-Admin	admin@firs.com	admin123	Full platform control
-📡 API Endpoints
-Method	Endpoint	Description	Request Body Example
-POST	/api/register	Register a new user	{ "name":"...", "email":"...", "password":"...", "role":"..." }
-POST	/api/login	Authenticate user	{ "email":"...", "password":"..." }
-GET	/api/products	Retrieve all products	–
-GET	/api/orders	Retrieve all orders (client‑side filter)	–
-POST	/api/orders	Create a new order	{ "userEmail":"...", "items":[ { "name":"...", "qty":... } ] }
-Note: All endpoints are CORS‑enabled for local development.
+Ensure:
 
-🖼️ Screenshots
-<details> <summary>Click to expand</summary>
-Homepage	Product Catalog	Dealer Dashboard
-https://screenshots/homepage.png	https://screenshots/catalog.png	https://screenshots/dealer.png
-</details>
-(Replace placeholder images with actual screenshots from your screenshots/ folder.)
+API_BASE = http://localhost:8080/api
+🔑 Demo Accounts
+Role	Email	Password	Access
+Customer	customer@firs.com
+	customer123	Limited catalog
+Government	gov@firs.com
+	gov123	Full catalog
+Dealer	dealer@firs.com
+	dealer123	Inventory control
+Admin	admin@firs.com
+	admin123	Full system access
+📡 API Reference
+Method	Endpoint	Description
+POST	/api/register	Register user
+POST	/api/login	Authenticate user
+GET	/api/products	Fetch products
+GET	/api/orders	Fetch orders
+POST	/api/orders	Create order
 
-🐞 Troubleshooting
-Issue	Solution
-CORS errors	Ensure backend runs on localhost:8080 and frontend is served from a different origin.
-Blank pages / JS errors	Open browser DevTools (F12) → Console tab for error details.
-Infinite recursion / huge JSON	Add @JsonIgnore to bidirectional relationships in JPA entities (see User.java).
-MySQL connection refused	Verify MySQL service is running and credentials in application.properties are correct.
-Images not loading	Confirm image paths exist under static/resources/images/ and static/resources/icons/.
+Example request:
+
+{
+  "email": "customer@firs.com",
+  "password": "customer123"
+}
+🐞 Known Issues / Notes
+Ensure MySQL service is running before backend startup
+Use CORS-enabled local server for frontend
+Avoid direct file opening (file://) for frontend
+Use @JsonIgnore for bidirectional JPA relationships to prevent recursion
 🤝 Contributing
-Contributions are welcome! Please follow these steps:
-
-Fork the repository
-
-Create a feature branch (git checkout -b feature/amazing-feature)
-
-Commit your changes (git commit -m 'Add some amazing feature')
-
-Push to the branch (git push origin feature/amazing-feature)
-
-Open a Pull Request
-
+Fork repo
+Create feature branch
+Commit changes
+Push branch
+Open PR
 📄 License
-This project is licensed under the MIT License – see the LICENSE file for details.
+
+MIT License — free to use and modify.
