@@ -1,4 +1,4 @@
-# 🔫 FIRS — Firearm Inventory & Repository System
+# 🔴🗡️⬆️ FIRS — Firearm Inventory & Repository System
 
 [![Java](https://img.shields.io/badge/Java-17%2B-007396?logo=openjdk&logoColor=white)](https://adoptium.net/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.2-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
