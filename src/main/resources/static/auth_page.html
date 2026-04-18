@@ -614,6 +614,18 @@
       color: var(--ash);
     }
 
+    .error-message {
+      color: var(--red-b);
+      font-size: 11px;
+      margin-top: 5px;
+      font-family: 'Rajdhani';
+      letter-spacing: 0.5px;
+    }
+
+    .field input.error {
+      border-color: var(--red-b) !important;
+    }
+
     @media(max-width:800px) {
       .auth-wrap {
         grid-template-columns: 1fr;
@@ -781,25 +793,29 @@
           <div class="field">
             <label>First Name</label>
             <input type="text" placeholder="John" id="firstName">
+            <div class="error-message" id="firstNameError"></div>
           </div>
           <div class="field">
             <label>Last Name</label>
             <input type="text" placeholder="Smith" id="lastName">
+            <div class="error-message" id="lastNameError"></div>
           </div>
         </div>
         <div class="field">
           <label>Email Address</label>
           <input type="email" placeholder="your@email.com" id="registerEmail">
+          <div class="error-message" id="emailError"></div>
         </div>
         <div class="field">
           <label>Password</label>
-          <input type="password" placeholder="Min. 10 characters" id="pw-input" oninput="checkPw(this.value)">
+          <input type="password" placeholder="Min. 8 characters, 1 uppercase, 1 number, 1 special" id="pw-input" oninput="checkPw(this.value)">
           <div class="pw-strength" id="pw-strength">
             <div class="pw-bar" id="b1"></div>
             <div class="pw-bar" id="b2"></div>
             <div class="pw-bar" id="b3"></div>
             <div class="pw-bar" id="b4"></div>
           </div>
+          <div class="error-message" id="passwordError"></div>
         </div>
 
         <!-- GOVT FIELDS -->
@@ -1045,7 +1061,7 @@
 
         <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:28px;">
           <input type="checkbox" id="agreeTerms" style="accent-color:var(--red);margin-top:3px;flex-shrink:0;"
-            onchange="toggleSubmitButton()">
+            onchange="validateBasicFields()">
           <span style="font-size:13px;color:var(--ash);line-height:1.5;">I agree to FIRS's <a href="#"
               style="color:var(--red);">Terms of Service</a>, <a href="#" style="color:var(--red);">Privacy Policy</a>,
             and confirm I am 21+ years of age.</span>
@@ -1114,15 +1130,127 @@
     function selectRole(card, role) {
       document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
+      // Set the hidden radio button checked
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
       document.getElementById('role-notice').innerHTML = `<img src="./resources/icons/icons_warning.png" alt="warning"><span>${notices[role]}</span>`;
       document.getElementById('govt-fields').style.display = role === 'govt' ? 'block' : 'none';
       document.getElementById('dealer-fields').style.display = role === 'dealer' ? 'block' : 'none';
+      // Reset any role‑specific field errors
+      document.getElementById('govtDept')?.classList.remove('error');
+      document.getElementById('govtBadge')?.classList.remove('error');
+      document.getElementById('dealerFFL')?.classList.remove('error');
+      document.getElementById('dealerBizName')?.classList.remove('error');
+      document.getElementById('dealerCountry')?.classList.remove('error');
+      validateBasicFields();
     }
 
-    function toggleSubmitButton() {
-      const checkbox = document.getElementById('agreeTerms');
+    // ---------- VALIDATION (only first name, last name, email, password) ----------
+    function isValidName(name) {
+      return /^[A-Za-zÀ-ÿ\s\-']+$/.test(name);
+    }
+
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    function isStrongPassword(password) {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      const isLongEnough = password.length >= 8;
+      return hasUpperCase && hasNumber && hasSpecial && isLongEnough;
+    }
+
+    function validateBasicFields() {
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('pw-input').value;
+      const termsChecked = document.getElementById('agreeTerms').checked;
+      
+      let isValid = true;
+
+      // First name validation
+      const firstNameInput = document.getElementById('firstName');
+      const firstNameError = document.getElementById('firstNameError');
+      if (!firstName) {
+        firstNameError.textContent = 'First name is required.';
+        firstNameInput.classList.add('error');
+        isValid = false;
+      } else if (!isValidName(firstName)) {
+        firstNameError.textContent = 'Only letters, spaces, hyphens, and apostrophes allowed.';
+        firstNameInput.classList.add('error');
+        isValid = false;
+      } else {
+        firstNameError.textContent = '';
+        firstNameInput.classList.remove('error');
+      }
+
+      // Last name validation
+      const lastNameInput = document.getElementById('lastName');
+      const lastNameError = document.getElementById('lastNameError');
+      if (!lastName) {
+        lastNameError.textContent = 'Last name is required.';
+        lastNameInput.classList.add('error');
+        isValid = false;
+      } else if (!isValidName(lastName)) {
+        lastNameError.textContent = 'Only letters, spaces, hyphens, and apostrophes allowed.';
+        lastNameInput.classList.add('error');
+        isValid = false;
+      } else {
+        lastNameError.textContent = '';
+        lastNameInput.classList.remove('error');
+      }
+
+      // Email validation
+      const emailInput = document.getElementById('registerEmail');
+      const emailError = document.getElementById('emailError');
+      if (!email) {
+        emailError.textContent = 'Email is required.';
+        emailInput.classList.add('error');
+        isValid = false;
+      } else if (!isValidEmail(email)) {
+        emailError.textContent = 'Enter a valid email address (e.g., name@domain.com).';
+        emailInput.classList.add('error');
+        isValid = false;
+      } else {
+        emailError.textContent = '';
+        emailInput.classList.remove('error');
+      }
+
+      // Password validation
+      const passwordInput = document.getElementById('pw-input');
+      const passwordError = document.getElementById('passwordError');
+      if (!password) {
+        passwordError.textContent = 'Password is required.';
+        passwordInput.classList.add('error');
+        isValid = false;
+      } else if (!isStrongPassword(password)) {
+        passwordError.textContent = 'Must be 8+ chars with uppercase, number, and special character.';
+        passwordInput.classList.add('error');
+        isValid = false;
+      } else {
+        passwordError.textContent = '';
+        passwordInput.classList.remove('error');
+      }
+
       const submitBtn = document.getElementById('registerSubmitBtn');
-      submitBtn.disabled = !checkbox.checked;
+      submitBtn.disabled = !(isValid && termsChecked);
+      return isValid;
+    }
+
+    // Attach input event listeners
+    function attachValidationListeners() {
+      const fields = ['firstName', 'lastName', 'registerEmail', 'pw-input'];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', validateBasicFields);
+        }
+      });
+      document.getElementById('agreeTerms').addEventListener('change', validateBasicFields);
     }
 
     function handleFileSelect(input, type) {
@@ -1166,15 +1294,26 @@
     window.addEventListener('DOMContentLoaded', () => {
       setupDragDrop('govtUploadZone', 'govtFileInput', 'govt');
       setupDragDrop('dealerUploadZone', 'dealerFileInput', 'dealer');
-      toggleSubmitButton();
+      attachValidationListeners();
+      validateBasicFields();
     });
 
     function checkPw(val) {
       const bars = [document.getElementById('b1'), document.getElementById('b2'), document.getElementById('b3'), document.getElementById('b4')];
       bars.forEach(b => { b.className = 'pw-bar'; });
-      const score = Math.min(Math.floor(val.length / 3), 4);
-      const cls = score <= 1 ? 'weak' : score === 2 ? 'medium' : score === 3 ? 'medium' : 'strong';
-      for (let i = 0; i < score; i++) bars[i].classList.add(cls);
+      
+      let strength = 0;
+      if (val.length >= 8) strength++;
+      if (/[A-Z]/.test(val)) strength++;
+      if (/[0-9]/.test(val)) strength++;
+      if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) strength++;
+      
+      const cls = strength <= 1 ? 'weak' : strength === 2 ? 'medium' : strength === 3 ? 'medium' : 'strong';
+      for (let i = 0; i < strength && i < 4; i++) {
+        bars[i].classList.add(cls);
+      }
+      
+      validateBasicFields();
     }
 
     function handleLogin() {
@@ -1191,26 +1330,23 @@
       }
     }
 
-    // FIXED: Now calls the backend API via registerUser()
     async function handleRegister() {
+      // Validate basic fields again
+      if (!validateBasicFields()) {
+        alert('Please correct the errors in the form.');
+        return;
+      }
+
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
       const email = document.getElementById('registerEmail').value.trim();
       const password = document.getElementById('pw-input').value;
       const termsChecked = document.getElementById('agreeTerms').checked;
 
-      if (!firstName || !lastName || !email || !password) {
-        alert('Please fill in all required fields.');
-        return;
-      }
-      if (!termsChecked) {
-        alert('You must agree to the Terms of Service and Privacy Policy.');
-        return;
-      }
-
       const selectedRole = document.querySelector('input[name="role"]:checked').value;
       const fullName = firstName + ' ' + lastName;
 
+      // Only validate govt/dealer fields if those roles are selected
       if (selectedRole === 'govt') {
         const dept = document.getElementById('govtDept').value.trim();
         const badge = document.getElementById('govtBadge').value.trim();
